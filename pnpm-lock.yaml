@@ -8,7 +8,13 @@ importers:
 
   .: {}
 
-  packages/app:
+  packages/consumer:
+    dependencies:
+      wallet-transfer-app:
+        specifier: workspace:*
+        version: link:../../projects/app-idempotency
+
+  projects/app-idempotency:
     dependencies:
       dotenv:
         specifier: ^17.2.3

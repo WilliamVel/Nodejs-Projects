@@ -4,7 +4,8 @@ const wallets = readJson("./wallets.json");
 
 export class WalletModel {
   static async getBalanceByUserId(userId) {
-    return wallets.find((wallet) => wallet.userId === userId)?.balance || 0;
+    const wallet = wallets.find((wallet) => wallet.userId === userId);
+    return wallet ? wallet.balance : null;
   }
 
   static async updateBalance(userId, newBalance) {

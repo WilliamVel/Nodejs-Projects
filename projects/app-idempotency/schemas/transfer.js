@@ -2,6 +2,7 @@ import { z } from "zod";
 
 const transferSchema = z
   .object({
+    txtId: z.string(),
     fromUserId: z.number().int().positive(),
     toUserId: z.number().int().positive(),
     amount: z.number().positive(),
