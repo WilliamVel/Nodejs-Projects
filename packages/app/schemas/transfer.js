@@ -1,10 +1,14 @@
 import { z } from "zod";
 
-const transferSchema = z.object({
-  fromUserId: z.number().int().positive(),
-  toUserId: z.number().int().positive(),
-  amount: z.number().positive(),
-});
+const transferSchema = z
+  .object({
+    fromUserId: z.number().int().positive(),
+    toUserId: z.number().int().positive(),
+    amount: z.number().positive(),
+  })
+  .refine((data) => data.fromUserId !== data.toUserId, {
+    message: "Cannot transfer to the same user",
+  });
 
 export const validateTransfer = (data) => {
   const result = transferSchema.safeParse(data);

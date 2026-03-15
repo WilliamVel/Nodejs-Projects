@@ -1,16 +1,21 @@
 import { WalletModel } from "../models/wallet.js";
 
+const processingUsers = new Set();
+
 export class TransferService {
   static async transfer(fromUserId, toUserId, amount) {
-    if (fromUserId === toUserId) {
-      return {
-        success: false,
-        message: `Cannot transfer to the same user`,
-      };
-    }
     try {
+      if (processingUsers.has(fromUserId) || processingUsers.has(toUserId)) {
+        return {
+          success: false,
+          message: `One of the users is currently processing another transfer. Please try again later.`,
+        };
+      }
+      processingUsers.add(fromUserId);
+      processingUsers.add(toUserId);
+
       const fromUserBalance = await WalletModel.getBalanceByUserId(fromUserId);
-      if (!fromUserBalance) {
+      if (fromUserBalance === null) {
         return {
           success: false,
           message: `User with id ${fromUserId} not found`,
@@ -23,17 +28,25 @@ export class TransferService {
         };
       }
       const toUserBalance = await WalletModel.getBalanceByUserId(toUserId);
+      if (toUserBalance === null) {
+        return {
+          success: false,
+          message: `User with id ${toUserId} not found`,
+        };
+      }
       // Update balances from user
+      let balanceUpdateFrom = fromUserBalance - amount;
       const responseBalanceFrom = await WalletModel.updateBalance(
         fromUserId,
-        fromUserBalance - amount,
+        balanceUpdateFrom,
       );
       if (!responseBalanceFrom.success)
         throw new Error(responseBalanceFrom.message);
       // Update balances to user
+      let balanceUpdateTo = toUserBalance + amount;
       const responseBalanceTo = await WalletModel.updateBalance(
         toUserId,
-        toUserBalance + amount,
+        balanceUpdateTo,
       );
       if (!responseBalanceTo.success) {
         await WalletModel.updateBalance(fromUserId, fromUserBalance);
@@ -44,6 +57,14 @@ export class TransferService {
       return {
         success: true,
         message: `Transferred ${amount} from ${fromUserId} to ${toUserId}`,
+        data: {
+          fromUserId: fromUserId,
+          toUserId: toUserId,
+          amount: amount,
+          fromNewBalance: balanceUpdateFrom,
+          toNewBalance: balanceUpdateTo,
+          timestamp: new Date().toISOString(),
+        },
       };
     } catch (error) {
       console.error(
@@ -53,6 +74,9 @@ export class TransferService {
         success: false,
         message: `Error occurred while transferring funds: ${error.message}`,
       };
+    } finally {
+      processingUsers.delete(fromUserId);
+      processingUsers.delete(toUserId);
     }
   }
 }
