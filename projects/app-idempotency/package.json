@@ -1,5 +1,5 @@
 {
-  "name": "wallet-transfer-app",
+  "name": "wallet-transfer-app-idempotency",
   "version": "1.0.0",
   "private": true,
   "type": "module",
