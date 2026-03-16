@@ -29,6 +29,7 @@ export const getTransactionsSchema = z.object({
 
 export type TransferInput = z.infer<typeof transferSchema>;
 export type GetTransactionsInput = z.infer<typeof getTransactionsSchema>;
+export type TransactionStatus = z.infer<typeof transactionStatusSchema>;
 
 export type ValidationResult<T> =
   | { success: true; data: T }

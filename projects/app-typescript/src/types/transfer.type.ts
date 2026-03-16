@@ -1,3 +1,5 @@
+import { GetTransactionsInput, TransactionStatus } from "../schemas/transfer.schema";
+
 // ── Transfer ──────────────────────────────────────
 export type TransferInput = {
   txId: string;
@@ -11,7 +13,7 @@ export type TransferResult = {
   fromUserId: number;
   toUserId: number;
   amount: number;
-  status: string;
+  status: TransactionStatus;
   timestamp: string;
 }
 
@@ -27,8 +29,6 @@ export type GetTransactionsByUserResult = {
   pagination: TransactionPagination;
 };
 
-export type TransactionStatus = 'SUCCESS' | 'FAILED' | 'PROCESSING';
-
-
-//  fromNewBalance: number;
-//   toNewBalance: number;
+export type ValidateTransactionsLocals = { 
+  validatedInput: GetTransactionsInput;
+};

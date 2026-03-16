@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { getTransactionsSchema, GetTransactionsInput } from '../schemas/transfer.schema'; 
-
-type ValidateTransactionsLocals = { validatedInput: GetTransactionsInput };
+import { getTransactionsSchema } from '../schemas/transfer.schema'; 
+import { ValidateTransactionsLocals } from '../types/transfer.type';
 
 export const validateGetTransactions = (
   req: Request, 

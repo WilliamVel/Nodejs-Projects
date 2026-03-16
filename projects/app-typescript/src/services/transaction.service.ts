@@ -1,8 +1,8 @@
 import { transactions } from '../transactions';
-import { 
-  TransactionStatus, 
+import {  
   GetTransactionsByUserResult,
 } from '../types/transfer.type';
+import { TransactionStatus } from '../schemas/transfer.schema';
 
 export class TransactionService {
   async getTransactionsByUserId(
